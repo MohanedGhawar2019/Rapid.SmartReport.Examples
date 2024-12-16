@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Report Examples";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Rapid.SmartReport Examples</h1>
+    <p>Choose an example to see different reporting capabilities:</p>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Simple Table Report</h5>
+                <p class="card-text">Basic example showing how to create a table report with sales data.</p>
+                <a asp-action="SimpleTable" class="btn btn-primary">View Example</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Chart Example</h5>
+                <p class="card-text">Example showing how to create charts from your data.</p>
+                <a asp-action="ChartExample" class="btn btn-primary">View Example</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Complex Report</h5>
+                <p class="card-text">Advanced example combining tables and charts in one report.</p>
+                <a asp-action="ComplexReport" class="btn btn-primary">View Example</a>
+            </div>
+        </div>
+    </div>
+</div>

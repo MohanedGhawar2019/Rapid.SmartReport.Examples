@@ -1,0 +1,132 @@
+@model IEnumerable<Rapid.SmartReport.Examples.Models.SalesData>
+
+<div class="container mt-4">
+    <h2>Chart Example</h2>
+    
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-secondary">Back to Examples</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="regionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Code Example</h5>
+        <pre><code>
+var report = Report&lt;SalesData&gt;.Create()
+    .WithTitle("Sales by Product")
+    .WithData(data)
+    .AddChart(chart => chart
+        .WithTitle("Sales Distribution")
+        .WithLabels(x => x.Product)
+        .WithValues(x => x.Amount));
+
+var pdfBytes = await report.ExportToPdfAsync();
+        </code></pre>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Sample Data</h5>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Total Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in Model.GroupBy(x => x.Product))
+                {
+                    <tr>
+                        <td>@group.Key</td>
+                        <td>@group.Sum(x => x.Amount).ToString("C2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const salesData = @Json.Serialize(Model);
+            
+            // Prepare data for sales chart
+            const productLabels = [...new Set(salesData.map(x => x.product))];
+            const productData = productLabels.map(product => 
+                salesData.filter(x => x.product === product)
+                    .reduce((sum, x) => sum + x.amount, 0)
+            );
+
+            // Create sales chart
+            new Chart(document.getElementById('salesChart'), {
+                type: 'bar',
+                data: {
+                    labels: productLabels,
+                    datasets: [{
+                        label: 'Sales by Product',
+                        data: productData,
+                        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Sales Distribution'
+                        }
+                    }
+                }
+            });
+
+            // Prepare data for region chart
+            const regionLabels = [...new Set(salesData.map(x => x.region))];
+            const regionData = regionLabels.map(region => 
+                salesData.filter(x => x.region === region)
+                    .reduce((sum, x) => sum + x.amount, 0)
+            );
+
+            // Create region chart
+            new Chart(document.getElementById('regionChart'), {
+                type: 'pie',
+                data: {
+                    labels: regionLabels,
+                    datasets: [{
+                        data: regionData,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Regional Distribution'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

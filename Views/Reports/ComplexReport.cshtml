@@ -1,0 +1,125 @@
+@model IEnumerable<Rapid.SmartReport.Examples.Models.SalesData>
+
+<div class="container mt-4">
+    <h2>Complex Report Example</h2>
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Sales Data Table</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Product</th>
+                                    <th>Amount</th>
+                                    <th>Region</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Date.ToShortDateString()</td>
+                                        <td>@item.Product</td>
+                                        <td>@item.Amount.ToString("C2")</td>
+                                        <td>@item.Region</td>
+                                        <td>@item.Quantity</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Sales by Product</h5>
+                    <canvas id="productChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Regional Distribution</h5>
+                    <canvas id="regionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const salesData = @Json.Serialize(Model);
+            
+            // Prepare data for product chart
+            const productLabels = [...new Set(salesData.map(x => x.product))];
+            const productData = productLabels.map(product => 
+                salesData.filter(x => x.product === product)
+                    .reduce((sum, x) => sum + x.amount, 0)
+            );
+
+            // Create product chart
+            new Chart(document.getElementById('productChart'), {
+                type: 'bar',
+                data: {
+                    labels: productLabels,
+                    datasets: [{
+                        label: 'Sales by Product',
+                        data: productData,
+                        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Sales Distribution'
+                        }
+                    }
+                }
+            });
+
+            // Prepare data for region chart
+            const regionLabels = [...new Set(salesData.map(x => x.region))];
+            const regionData = regionLabels.map(region => 
+                salesData.filter(x => x.region === region)
+                    .reduce((sum, x) => sum + x.amount, 0)
+            );
+
+            // Create region chart
+            new Chart(document.getElementById('regionChart'), {
+                type: 'pie',
+                data: {
+                    labels: regionLabels,
+                    datasets: [{
+                        data: regionData,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Regional Distribution'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
