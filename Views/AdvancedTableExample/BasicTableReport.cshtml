@@ -1,0 +1,29 @@
+@using Rapid.SmartReport.Examples.Models
+@model Rapid.SmartReport.Core.Report<SalesData>
+
+@{
+    ViewData["Title"] = "Basic Table Report";
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Basic Table Report</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Basic Sales Report with Sorting</h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                This example demonstrates a simple table with sorting by Amount in descending order.
+            </div>
+
+            <div class="table-responsive">
+                @await Component.InvokeAsync("SmartReport", new { reportData = Model })
+            </div>
+        </div>
+    </div>
+</div>

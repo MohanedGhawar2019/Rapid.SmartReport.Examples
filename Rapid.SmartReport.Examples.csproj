@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Rapid.SmartReport.Core" Version="1.0.2" />
+    <PackageReference Include="Rapid.SmartReport.Core" Version="1.0.5" />
+    <PackageReference Include="Rapid.SmartReport.Blazor" Version="1.0.5" />
     <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
 

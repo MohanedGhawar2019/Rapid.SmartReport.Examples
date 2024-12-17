@@ -1,0 +1,30 @@
+@using Rapid.SmartReport.Examples.Models
+@model Rapid.SmartReport.Core.Report<SalesData>
+
+@{
+    ViewData["Title"] = "Multi-Sort Table Report";
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Multi-Sort Table Report</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Multi-Sorted Sales Report</h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                This example demonstrates sorting by Region in ascending order.
+                <small class="d-block mt-2">Note: Multi-column sorting will be implemented in future versions.</small>
+            </div>
+
+            <div class="table-responsive">
+                @await Component.InvokeAsync("SmartReport", new { reportData = Model })
+            </div>
+        </div>
+    </div>
+</div>
